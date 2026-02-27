@@ -1,0 +1,2082 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catálogo Soltar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #daf1ef;
+      --panel: rgba(255, 255, 255, 0.7);
+      --panel-strong: rgba(255, 255, 255, 0.85);
+      --accent: #3eb5ba;
+      --accent-2: #f3d9a4;
+      --text: #1f2e2d;
+      --muted: #58706f;
+      --shadow: 0 16px 36px rgba(27, 73, 80, 0.18);
+      --card-radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      background-attachment: fixed;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      grid-template-rows: auto auto;
+      align-items: center;
+      padding: 18px 24px 10px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(10px);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.65) 100%),
+        url('fh.png');
+      background-size: 100% 100%, 24% auto;
+      background-position: center, center;
+      background-repeat: no-repeat, no-repeat;
+      border-bottom: 1px solid rgba(62,181,186,0.18);
+      gap: 8px 10px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      grid-column: 2 / 3;
+    }
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #3eb5ba, #a4ede8);
+      display: grid;
+      place-items: center;
+      color: #0f1f24;
+      font-weight: 700;
+      box-shadow: var(--shadow);
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-self: end;
+    }
+
+    /* Mobile nav */
+    .hamburger {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.12);
+      background: #fff;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+    }
+    .hamburger span {
+      display: block;
+      width: 18px;
+      height: 2px;
+      background: #2d5261;
+      border-radius: 2px;
+      position: relative;
+    }
+    .hamburger span::before,
+    .hamburger span::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      width: 18px;
+      height: 2px;
+      background: #2d5261;
+      border-radius: 2px;
+    }
+    .hamburger span::before { top: -6px; }
+    .hamburger span::after { top: 6px; }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 72px;
+      left: 12px;
+      right: 12px;
+      background: rgba(255,255,255,0.96);
+      border: 1px solid rgba(62,181,186,0.16);
+      border-radius: 14px;
+      box-shadow: 0 14px 34px rgba(0,0,0,0.12);
+      padding: 10px;
+      z-index: 60;
+    }
+    .mobile-menu.open { display: grid; gap: 8px; }
+    .mobile-menu .filter-btn { justify-content: flex-start; width: 100%; text-align: left; }
+
+    /* Filtros */
+    .filter-nav {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      padding: 6px 18px 0;
+      margin: 0 auto;
+      max-width: 1280px;
+      grid-column: 1 / 4;
+    }
+    .filter-btn {
+      border: none;
+      background: transparent;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      color: #2d5261;
+      padding: 8px 14px;
+      border-radius: 12px;
+      transition: transform 120ms ease, box-shadow 160ms ease, background 160ms ease;
+      cursor: pointer;
+    }
+    .filter-btn:hover { transform: translateY(-1px); }
+    .filter-btn.active {
+      background: rgba(62,181,186,0.12);
+      box-shadow: 0 10px 24px rgba(62,181,186,0.18);
+    }
+
+    /* Social icons */
+    .header-social {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+    .social-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 24, 51, 0.16);
+      background: #0b0f1a;
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .social-icon svg {
+      width: 18px;
+      height: 18px;
+    }
+    .social-icon.social-whatsapp {
+      color: #0a8c47;
+      border-color: rgba(10, 140, 71, 0.3);
+      background: linear-gradient(135deg, rgba(74, 221, 130, 0.18), rgba(10, 140, 71, 0.1));
+    }
+    .social-icon:hover { transform: translateY(-1px); }
+    .social-icon.social-whatsapp:hover { box-shadow: 0 12px 24px rgba(10, 140, 71, 0.25); }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #0f1f24;
+      background: var(--accent);
+      box-shadow: 0 12px 28px rgba(62, 181, 186, 0.35);
+      transition: transform 120ms ease, box-shadow 160ms ease;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 16px 36px rgba(62, 181, 186, 0.45); }
+    .btn:active { transform: translateY(0); }
+
+    main {
+      padding: 10px 24px 0;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      display: grid;
+      gap: 16px;
+      margin: 18px 0 8px;
+    }
+    .hero h1 {
+      font-size: clamp(28px, 3vw, 38px);
+      margin: 0;
+    }
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 760px;
+      line-height: 1.6;
+    }
+
+    .banner-hero {
+      display: grid;
+      place-items: center;
+      margin: 10px 0 16px;
+    }
+    .banner-hero img {
+      max-width: min(760px, 88vw);
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      margin-top: 16px;
+    }
+
+    /* Logo carousel */
+    .panel {
+      background: var(--panel);
+      border: 1px solid rgba(62,181,186,0.16);
+      border-radius: 18px;
+      padding: 14px 12px;
+      box-shadow: var(--shadow);
+    }
+    .panel-narrow {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    .holo-panel {
+      background: radial-gradient(circle at 12% 20%, rgba(62,181,186,0.10), rgba(255,255,255,0.92));
+    }
+    .section-caption {
+      margin: 0 0 10px;
+      font-size: 13px;
+      letter-spacing: 1px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .logo-carousel {
+      overflow: hidden;
+      position: relative;
+    }
+    .logo-track {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      animation: scroll-logos 26s linear infinite;
+    }
+    .logo-item {
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+      margin: 0;
+    }
+    .logo-item img {
+      height: 120px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+    @keyframes scroll-logos {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* Patrón 2-3-4 repetido (desktop) */
+    @media (min-width: 960px) {
+      .grid {
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        justify-items: start;
+      }
+      .grid > .card { width: 100%; }
+      .grid > .card:nth-child(9n+1),
+      .grid > .card:nth-child(9n+2) { grid-column: span 6; }
+      .grid > .card:nth-child(9n+3),
+      .grid > .card:nth-child(9n+4),
+      .grid > .card:nth-child(9n+5) { grid-column: span 4; }
+      .grid > .card:nth-child(9n+6),
+      .grid > .card:nth-child(9n+7),
+      .grid > .card:nth-child(9n+8),
+      .grid > .card:nth-child(9n+9) { grid-column: span 3; }
+      /* For the last row, force up to 4 items to 3 columns each */
+      .grid > .card:nth-last-child(-n+4) { grid-column: span 3; }
+      /* Patrón específico para Banquetas: 4-2-4 en bloques de 10 */
+      .grid.grid-banquetas > .card { grid-column: span 3; }
+      .grid.grid-banquetas > .card:nth-child(10n+5),
+      .grid.grid-banquetas > .card:nth-child(10n+6) { grid-column: span 6; }
+
+      /* Bancos: centrar tarjetas si hay pocos */
+      .grid.grid-bancos {
+        justify-items: center;
+      }
+
+      /* Mesas: centrar última línea (centrado general) */
+      .grid.grid-mesas {
+        justify-items: center;
+      }
+    }
+
+    .brand-logo {
+      height: 80px;
+      max-width: 240px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.06);
+      transition: transform 120ms ease, box-shadow 180ms ease;
+      cursor: pointer;
+    }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 14px 34px rgba(0,0,0,0.08); }
+
+    .card-visual {
+      aspect-ratio: 4 / 5;
+      height: clamp(300px, 62vw, 470px);
+      background: #ffffff;
+      position: relative;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+    .card-visual img {
+      width: 85%;
+      height: 85%;
+      max-width: 85%;
+      max-height: 85%;
+      object-fit: contain;
+      filter: drop-shadow(0 10px 26px rgba(0,0,0,0.18));
+      transition: transform 160ms ease;
+    }
+    .card:hover .card-visual img { transform: scale(1.02); }
+    .card-visual .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      border: 2px solid #d6f1f2;
+      background: #ffffff;
+      color: var(--accent);
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 50%;
+      box-shadow: 0 16px 32px rgba(0,0,0,0.18);
+      backdrop-filter: blur(6px);
+      opacity: 1;
+      transition: transform 140ms ease, box-shadow 160ms ease;
+      z-index: 3;
+    }
+    .card-visual .nav-btn:hover { transform: translateY(-50%) scale(1.07); box-shadow: 0 18px 40px rgba(0,0,0,0.18); }
+    .card-visual .nav-btn.prev { left: 10px; }
+    .card-visual .nav-btn.next { right: 10px; }
+
+    .card-body {
+      padding: 12px 14px 16px;
+      display: grid;
+      gap: 4px;
+      flex: 1;
+    }
+    .card-title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+    .card-price {
+      color: #2d2d2d;
+      font-weight: 600;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+    .card-price-line {
+      font-weight: 600;
+      color: #2d2d2d;
+      font-size: 14px;
+      letter-spacing: 0.1px;
+    }
+    .muted { color: #6f6f6f; font-size: 13px; }
+
+    .swatches {
+      display: flex;
+      gap: 4px;
+      flex-wrap: nowrap;
+    }
+    .swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.14);
+      cursor: pointer;
+      box-shadow: none;
+      transition: transform 80ms ease, border-color 140ms ease;
+    }
+    .swatch:hover { transform: translateY(-1px); border-color: var(--accent); }
+    .swatch.active { border-color: var(--accent); }
+
+    .card-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 2px;
+    }
+    .ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(0,0,0,0.12);
+      box-shadow: none;
+      padding: 8px 14px;
+      font-weight: 500;
+    }
+    .wa-btn {
+      background: linear-gradient(135deg, rgba(74,221,130,0.18), rgba(10,140,71,0.10));
+      border: 1px solid rgba(10,140,71,0.3);
+      color: #0a8c47;
+      box-shadow: 0 12px 24px rgba(10,140,71,0.20);
+      padding: 8px 14px;
+      font-weight: 500;
+      font-size: 14px;
+      text-decoration: none;
+    }
+    .wa-btn:hover { box-shadow: 0 12px 24px rgba(10,140,71,0.30); transform: translateY(-1px); }
+
+    /* === Nuevo estilo: botón Descripción en turquesa, estilo WhatsApp === */
+    .desc-btn {
+      background: linear-gradient(135deg, rgba(62,181,186,0.18), rgba(62,181,186,0.10));
+      border: 1px solid rgba(62,181,186,0.3);
+      color: #3eb5ba;
+      box-shadow: 0 12px 24px rgba(62,181,186,0.20);
+      padding: 8px 14px;
+      font-weight: 500;
+      font-size: 14px;
+      text-decoration: none;
+    }
+    .desc-btn:hover {
+      box-shadow: 0 12px 24px rgba(62,181,186,0.30);
+      transform: translateY(-1px);
+    }
+
+    /* Drawer */
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(380px, 92vw);
+      height: 100vh;
+      background: rgba(255,255,255,0.92);
+      border-left: 1px solid rgba(62,181,186,0.18);
+      box-shadow: -24px 0 60px rgba(31,73,80,0.18);
+      padding: 18px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 12px;
+      transform: translateX(110%);
+      transition: transform 220ms ease;
+      z-index: 30;
+      backdrop-filter: blur(8px);
+    }
+    .drawer.open { transform: translateX(0); }
+    .drawer header {
+      position: static;
+      background: transparent;
+      border: none;
+      padding: 0;
+    }
+    .drawer-list {
+      overflow: auto;
+      display: grid;
+      gap: 12px;
+      padding-right: 6px;
+    }
+    .cart-item {
+      background: var(--panel);
+      border-radius: 14px;
+      padding: 12px;
+      border: 1px solid rgba(62,181,186,0.12);
+      display: grid;
+      grid-template-columns: 60px 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+    .cart-thumb {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(62,181,186,0.45), rgba(243,217,164,0.35));
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+    .cart-thumb img { width: 80%; height: 80%; object-fit: contain; }
+    .cart-item h4 { margin: 0 0 4px; font-size: 15px; }
+    .cart-meta { color: var(--muted); font-size: 13px; }
+    .qty {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--panel-strong);
+      padding: 6px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(62,181,186,0.15);
+    }
+    .qty button {
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 16px;
+      cursor: pointer;
+      padding: 2px 6px;
+    }
+    .drawer footer {
+      border-top: 1px solid rgba(62,181,186,0.16);
+      padding-top: 12px;
+      display: grid;
+      gap: 10px;
+    }
+    .total-line {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    /* Dialog */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(31,73,80,0.28);
+      backdrop-filter: blur(6px);
+      display: grid;
+      place-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 160ms ease;
+      z-index: 25;
+      padding: 18px;
+    }
+    .overlay.open { opacity: 1; pointer-events: auto; }
+    .modal {
+      width: min(820px, 96vw);
+      background: rgba(255,255,255,0.95);
+      border: 1px solid rgba(62,181,186,0.2);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+    .modal-body {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 14px;
+      align-items: start;
+    }
+    .modal-info {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+    .modal header {
+      position: relative;
+      padding: 0;
+      border: none;
+      background: transparent;
+    }
+    .close {
+      position: absolute;
+      right: 0;
+      top: 0;
+      border: none;
+      background: var(--panel-strong);
+      color: var(--text);
+      border-radius: 999px;
+      width: 34px;
+      height: 34px;
+      cursor: pointer;
+      border: 1px solid rgba(62,181,186,0.2);
+    }
+    .modal-visual {
+      width: 100%;
+      height: clamp(420px, 70vh, 720px);
+      border-radius: 16px;
+      background: #ffffff;
+      border: 1.5px solid rgba(0,0,0,0.06);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.07) inset;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .modal-visual img {
+      width: 100%;
+      height: 100%;
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+      padding: 12px;
+      background: #ffffff;
+    }
+    .modal-visual video {
+      width: auto;
+      height: 100%;
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+      padding: 12px;
+      box-sizing: border-box;
+      background: #000;
+    }
+    .modal-visual .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.12);
+      background: rgba(255,255,255,0.9);
+      color: #1f2e2d;
+      font-size: 20px;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+    }
+    .modal-visual .nav-btn:hover { background: #fff; }
+    .modal-visual .nav-btn.prev { left: 10px; }
+    .modal-visual .nav-btn.next { right: 10px; }
+
+    /* Lightbox */
+    #lightbox {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.75);
+      z-index: 60;
+      padding: 20px;
+    }
+    #lightbox.open { display: flex; }
+    #lightbox img {
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: 12px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+      background: #fff;
+    }
+    #lightbox .close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.6);
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .flex {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* mobile basics (header/cards) */
+    @media (max-width: 600px) {
+      header { padding: 14px 16px; position: sticky; }
+      .card-body { padding: 12px; }
+      .card-actions { grid-template-columns: 1fr; }
+      .filter-nav { display: none; }
+      .hamburger { display: inline-flex; }
+    }
+    .wa-btn, .desc-btn {
+      font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+      font-weight: 600;
+    }
+
+    /* ===== MODAL MOBILE (orden tipo navegador) ===== */
+    @media (max-width: 600px){
+
+      /* overlay con margen */
+      .overlay{
+        padding: 14px !important;
+        place-items: center !important;
+      }
+
+      /* modal como tarjeta (no full screen) */
+      .modal{
+        width: min(520px, 100%) !important;
+        max-height: calc(100dvh - 28px) !important;
+        height: auto !important;
+        border-radius: 18px !important;
+        padding: 14px !important;
+
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        overflow: hidden !important;
+      }
+
+      /* Header sticky arriba */
+      .modal > header{
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 10 !important;
+        background: rgba(255,255,255,0.96) !important;
+        backdrop-filter: blur(10px);
+        padding-bottom: 6px !important;
+        margin-bottom: 0 !important;
+        border-bottom: 1px solid rgba(62,181,186,0.14);
+        order: 1;
+      }
+
+      /* Colores debajo del nombre (y arriba de TODO) */
+      #modal-swatches{
+        order: 2;
+        margin: 0 !important;
+        padding: 8px 2px 10px !important;
+
+        display: flex !important;
+        gap: 8px !important;
+        overflow-x: auto !important;
+        flex-wrap: nowrap !important;
+        -webkit-overflow-scrolling: touch;
+
+        background: rgba(255,255,255,0.92);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(62,181,186,0.10);
+      }
+
+      /* Swatches más tocables */
+      #modal-swatches .swatch{
+        width: 18px !important;
+        height: 18px !important;
+        border-radius: 6px !important;
+      }
+
+      /* Oculta mini fotos en mobile */
+      #modal-gallery{ display: none !important; }
+
+      /* Body scrollea (y deja ver que sigue abajo) */
+      .modal-body{
+        order: 3;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+
+        overflow: auto !important;
+        max-height: calc(100dvh - 28px - 56px); /* espacio para la barra WA */
+        padding-bottom: 68px; /* para que no tape el WA sticky */
+        position: relative;
+      }
+
+      /* Foto completa pero más chica */
+      .modal-visual{
+        order: 1;
+        height: auto !important;          /* NO altura fija */
+        max-height: 34dvh !important;     /* tope para que no se coma todo */
+        aspect-ratio: 4 / 3 !important;   /* mantiene caja proporcionada */
+        border-radius: 14px !important;
+        overflow: hidden !important;
+      }
+      .modal-visual img,
+      .modal-visual video{
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: contain !important;   /* clave: entra completo */
+        padding: 10px !important;         /* aire alrededor */
+        background: #fff !important;
+      }
+
+      /* Info debajo: deja ver precio + inicio descripción */
+      .modal-info{ order: 2; }
+
+      /* “Indicador” visual de que hay más contenido abajo */
+      .modal-body::after{
+        content: "";
+        position: sticky;
+        bottom: 0;
+        display: block;
+        height: 26px;
+        margin-top: -26px;
+        background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.96));
+        pointer-events: none;
+      }
+
+      /* Barra WhatsApp sticky abajo */
+      .modal .flex:last-of-type{
+        order: 4;
+        position: sticky !important;
+        bottom: 0 !important;
+        z-index: 12 !important;
+        background: rgba(255,255,255,0.96) !important;
+        backdrop-filter: blur(10px);
+        padding-top: 10px !important;
+        border-top: 1px solid rgba(62,181,186,0.14);
+      }
+
+      #modal-add{
+        width: 100%;
+        justify-content: center;
+        padding: 12px 14px !important;
+        border-radius: 14px !important;
+      }
+    }
+
+    .footer-soltar{
+      margin-top:0;
+      padding:80px 20px 60px;
+      text-align:center;
+      background:linear-gradient(
+        180deg,
+        transparent,
+        rgba(255,255,255,0.7)
+      );
+    }
+
+    .footer-question{
+      font-size:18px;
+      color:#1f2e2d;
+      margin-bottom:18px;
+      font-weight:500;
+    }
+
+    .footer-wa{
+      display:inline-block;
+      padding:12px 22px;
+      border-radius:999px;
+      text-decoration:none;
+      font-weight:600;
+      color:#0a8c47;
+      border:1px solid rgba(10,140,71,.25);
+      background:rgba(74,221,130,.12);
+      transition:.25s;
+    }
+
+    .footer-wa:hover{
+      transform:translateY(-2px);
+      box-shadow:0 12px 28px rgba(10,140,71,.25);
+    }
+
+    .footer-brand{
+      margin-top:40px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    .footer-brand span{
+      font-size:20px;
+      font-weight:700;
+      letter-spacing:.5px;
+    }
+
+    .footer-brand small{
+      color:#58706f;
+      font-size:13px;
+    }
+
+    @media (max-width: 600px){
+
+      /* CONTENEDOR de la foto: más alto y sin recortar */
+      .modal .modal-visual{
+        height: 42dvh !important;     /* subilo (antes te quedó chico) */
+        min-height: 260px !important; /* asegura que no se haga tirita */
+        max-height: 420px !important; /* no se come toda la pantalla */
+        display: grid !important;
+        place-items: center !important;
+        overflow: hidden !important;
+      }
+
+      /* IMAGEN: siempre completa */
+      .modal .modal-visual img,
+      .modal .modal-visual video{
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: contain !important;   /* NO recorta */
+        padding: 10px !important;
+        background: #fff !important;
+      }
+
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button class="hamburger" id="menu-toggle" aria-label="Abrir menú" aria-expanded="false"><span></span></button>
+    <div class="brand">
+      <img src="logo.png" alt="Soltar" class="brand-logo" loading="lazy">
+    </div>
+    <div class="actions header-social"></div>
+    <nav class="filter-nav" id="filter-nav" aria-label="Filtrar productos">
+      <button class="filter-btn active" data-filter="inicio">Inicio</button>
+      <button class="filter-btn" data-filter="banquetas">Banquetas</button>
+      <button class="filter-btn" data-filter="bancos">Bancos</button>
+      <button class="filter-btn" data-filter="mesas">Mesas</button>
+    </nav>
+  </header>
+
+  <div class="mobile-menu" id="mobile-menu" aria-label="Menú móvil">
+    <button class="filter-btn active" data-filter="inicio">Inicio</button>
+    <button class="filter-btn" data-filter="banquetas">Banquetas</button>
+    <button class="filter-btn" data-filter="bancos">Bancos</button>
+    <button class="filter-btn" data-filter="mesas">Mesas</button>
+  </div>
+
+  <main>
+    <section class="panel panel-narrow holo-panel" style="margin-top: 1rem" data-reveal>
+      <div class="logo-carousel logo-carousel-sm" aria-label="Proyectos destacados carousel compacto">
+        <div class="logo-track">
+          <figure class="logo-item">
+            <img src="carrusel/carrusel1.jpg" alt="Foto 1" loading="lazy" />
+          </figure>
+          <figure class="logo-item">
+            <img src="carrusel/carrusel2.jpg" alt="Foto 2" loading="lazy" />
+          </figure>
+          <figure class="logo-item">
+            <img src="carrusel/carrusel3.jpg" alt="Foto 3" loading="lazy" />
+          </figure>
+          <figure class="logo-item">
+            <img src="carrusel/carrusel4.jpg" alt="Foto 4" loading="lazy" />
+          </figure>
+          <figure class="logo-item">
+            <img src="carrusel/carrusel5.jpg" alt="Foto 5" loading="lazy" />
+          </figure>
+          <figure class="logo-item">
+            <img src="carrusel/carrusel6.JPG" alt="Foto 6" loading="lazy" />
+          </figure>
+          <figure class="logo-item">
+            <img src="carrusel/carrusel7.jpg" alt="Foto 7" loading="lazy" />
+          </figure>
+          <figure class="logo-item">
+            <img src="carrusel/carrusel8.JPG" alt="Foto 8" loading="lazy" />
+          </figure>
+          <figure class="logo-item">
+            <img src="carrusel/carrusel9.jpg" alt="Foto 9" loading="lazy" />
+          </figure>
+          <figure class="logo-item">
+            <img src="carrusel/carrusel10.png" alt="Foto 10" loading="lazy" />
+          </figure>
+          <figure class="logo-item">
+            <img src="carrusel/carrusel11.png" alt="Foto 11" loading="lazy" />
+          </figure>
+          <figure class="logo-item">
+            <img src="carrusel/carrusel12.jpg" alt="Foto 12" loading="lazy" />
+          </figure>
+          <!-- Duplicate set for seamless loop -->
+          <figure class="logo-item">
+            <img src="carrusel/carrusel1.jpg" alt="Foto 1" loading="lazy" />
+          </figure>
+          <figure class="logo-item">
+            <img src="carrusel/carrusel2.jpg" alt="Foto 2" loading="lazy" />
+          </figure>
+          <figure class="logo-item">
+            <img src="carrusel/carrusel3.jpg" alt="Foto 3" loading="lazy" />
+          </figure>
+          <figure class="logo-item">
+            <img src="carrusel/carrusel4.jpg" alt="Foto 4" loading="lazy" />
+          </figure>
+          <figure class="logo-item">
+            <img src="carrusel/carrusel5.jpg" alt="Foto 5" loading="lazy" />
+          </figure>
+          <figure class="logo-item">
+            <img src="carrusel/carrusel6.JPG" alt="Foto 6" loading="lazy" />
+          </figure>
+          <figure class="logo-item">
+            <img src="carrusel/carrusel7.jpg" alt="Foto 7" loading="lazy" />
+          </figure>
+          <figure class="logo-item">
+            <img src="carrusel/carrusel8.JPG" alt="Foto 8" loading="lazy" />
+          </figure>
+          <figure class="logo-item">
+            <img src="carrusel/carrusel9.jpg" alt="Foto 9" loading="lazy" />
+          </figure>
+          <figure class="logo-item">
+            <img src="carrusel/carrusel10.png" alt="Foto 10" loading="lazy" />
+          </figure>
+          <figure class="logo-item">
+            <img src="carrusel/carrusel11.png" alt="Foto 11" loading="lazy" />
+          </figure>
+          <figure class="logo-item">
+            <img src="carrusel/carrusel12.jpg" alt="Foto 12" loading="lazy" />
+          </figure>
+        </div>
+      </div>
+    </section>
+    <div class="grid" id="product-grid"></div>
+  </main>
+
+  <footer class="footer-soltar">
+    <p class="footer-question">
+      ¿Tenés alguna duda o consulta?
+    </p>
+
+    <a href="https://wa.me/5491167813147"
+       target="_blank"
+       class="footer-wa">
+       Hablemos por WhatsApp
+    </a>
+
+    <div class="footer-brand">
+      <span>Soltar</span>
+      <small>Hecho para compartir momentos.</small>
+    </div>
+  </footer>
+
+  <aside class="drawer" id="drawer">
+    <header>
+      <div class="brand" style="gap: 12px;">
+        <div class="brand-mark" style="width:36px;height:36px;font-size:14px;">S</div>
+        <div>Tu carrito</div>
+      </div>
+      <button class="close" id="close-drawer" aria-label="Cerrar carrito">×</button>
+    </header>
+    <div class="drawer-list" id="cart-list"></div>
+    <footer>
+      <div class="total-line">
+        <span>Total</span>
+        <span id="cart-total">$0</span>
+      </div>
+        <button class="btn" style="width: 100%;">Comprar ahora</button>
+    </footer>
+  </aside>
+
+  <div class="overlay" id="overlay">
+    <div class="modal" role="dialog" aria-modal="true">
+      <header>
+        <h2 id="modal-title" style="margin: 0;">Detalle</h2>
+        <button class="close" id="close-modal" aria-label="Cerrar detalle">×</button>
+      </header>
+      <div class="modal-body">
+        <div class="modal-info">
+          <div class="muted" style="font-size:13px;">Precio</div>
+          <div id="modal-price" style="font-weight:700;font-size:18px;"></div>
+          <div class="muted" style="font-size:13px;margin-top:8px;">Descripción</div>
+          <div id="modal-description" class="muted" style="margin:0; display:grid; gap:8px;"></div>
+          <div id="modal-meta"></div>
+        </div>
+        <div class="modal-visual" id="modal-media"></div>
+      </div>
+      <div class="flex" id="modal-swatches"></div>
+      <div class="flex" style="gap:8px; overflow-x:auto;" id="modal-gallery"></div>
+      <div class="flex" style="justify-content: space-between;">
+        <!-- Botón de WhatsApp en modal -->
+        <a class="btn wa-btn" id="modal-add" href="#" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;">
+          <!-- Ícono WhatsApp -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0a8c47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;">
+            <path d="M20 12.3a8 8 0 1 0-14.1 5L4 20l2.8-.7A8 8 0 0 0 20 12.3Z"/>
+            <path d="M9 9.5c-.3.5-.6 1.3 0 2.1.7 1 1.9 2.1 3 2.6.7.3 1.3.2 1.8 0l.8-.4c.4-.2.6 0 .7.2l.6 1c.2.3.1.7-.1 1-1 1.1-2.5 1.4-4.4.5-1.6-.7-3.5-2.5-4-3.8-.6-1.6-.1-3 1-3.8.3-.2.7-.1.9.2l.7 .8Z" fill="#0a8c47" stroke="none"/>
+          </svg>
+          WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div id="lightbox" aria-hidden="true">
+    <img id="lightbox-img" alt="Vista ampliada">
+    <button class="close" id="lightbox-close" aria-label="Cerrar imagen">×</button>
+  </div>
+
+  <script>
+    const products = [
+      {
+        id: 'aurora',
+        name: 'Sillas Rombo',
+        price: 125000,
+        description: 'Medidas:\nAltura regulable de 64 cm a 83 cm.\nDiámetro de base: 46 cm.\nAltura de respaldo: 29 cm.\nProfundidad del asiento: 35 cm.\n\n',        
+        colors: [
+          { name: 'Blanco', code: '#FFFFFF', media: [
+            { type: 'image', src: 'imagenes/r1.jpg' },
+            { type: 'image', src: 'imagenes/IMG_0255.jpg' },
+            { type: 'image', src: 'imagenes/1.jpg' },
+
+          ]},
+          { name: 'Beige', code: '#EBDECF', media: [
+            { type: 'image', src: 'imagenes/r3.jpg' },
+            { type: 'image', src: 'imagenes/beige2.png' },
+            { type: 'image', src: 'imagenes/beige3.png' },
+          ]},
+          { name: 'Negro', code: '#000000', media: [
+            { type: 'image', src: 'imagenes/r2.jpg' },
+            { type: 'image', src: 'imagenes/negra2.png' },
+            { type: 'image', src: 'imagenes/negra3.png' },
+            { type: 'image', src: 'imagenes/negra4.png' },
+
+          ]},
+          { name: 'Negro Veteado', code: '#3c3b37', media: [
+            { type: 'image', src: 'imagenes/nv1.png' },
+            { type: 'image', src: 'imagenes/nv2.png' },
+            { type: 'image', src: 'imagenes/nv3.png' },
+            ]},
+          { name: 'Gris', code: '#756f69', media: [
+            { type: 'image', src: 'imagenes/gris1.jpg' },
+            { type: 'image', src: 'imagenes/gris2.jpg' },
+            { type: 'image', src: 'imagenes/gris3.JPG' },
+            { type: 'image', src: 'imagenes/gris4.JPG' },
+
+            ]},
+          { name: 'Turquesa suave', code: '#a4ede8', media: [
+            { type: 'image', src: 'imagenes/turquesa1.jpg' },
+            { type: 'image', src: 'imagenes/turquesa2.png' },
+            { type: 'image', src: 'imagenes/turquesa3.png' },
+            { type: 'image', src: 'imagenes/turquesa4.png' },
+          ]},
+          { name: 'Marron Oscuro', code: '#5e3522', media: [
+            { type: 'image', src: 'imagenes/mo1.jpg' },
+            { type: 'image', src: 'imagenes/mo2.png' },
+            { type: 'image', src: 'imagenes/mo3.png' },
+            ]},
+          { name: 'Suela', code: '#7e3c0c', media: [
+            { type: 'image', src: 'imagenes/suela1.png' },
+            { type: 'image', src: 'imagenes/suela2.png' },
+            { type: 'image', src: 'imagenes/suela3.png' },
+          ]},
+          { name: 'Ocre', code: '#9f603a', media: [
+            { type: 'image', src: 'imagenes/ocre1.png' },
+            { type: 'image', src: 'imagenes/ocre2.png' },
+            { type: 'image', src: 'imagenes/ocre3.png' },
+           ]},
+          { name: 'Bordo', code: '#471e1d', media: [
+            { type: 'image', src: 'imagenes/bordo1.png' },
+            { type: 'image', src: 'imagenes/bordo2.png' },
+            { type: 'image', src: 'imagenes/bordo3.png' },
+            { type: 'image', src: 'imagenes/bordo4.png' },
+            ]},
+          { name: 'Azul Marino', code: '#1b2431', media: [
+            { type: 'image', src: 'imagenes/am1.png' },
+            { type: 'image', src: 'imagenes/am2.png' },
+            { type: 'image', src: 'imagenes/am3.png' },
+            { type: 'image', src: 'imagenes/am4.png' },
+            
+            ]},
+          
+        ]
+      },
+      {
+        id: 'lumen',
+        name: 'Sillas Rombo Base Negra',
+        price: 135000,
+        description: 'Medidas:\nAltura regulable de 64 cm a 83 cm.\nDiámetro de base: 46 cm.\nAltura de respaldo: 29 cm.\nProfundidad del asiento: 35 cm.\n\n',        
+        colors: [
+          { name: 'Blanco', code: '#FFFFFF', media: [
+            { type: 'image', src: 'imagenes/rombosbnb1.png' },
+            { type: 'image', src: 'imagenes/rombosbnb2.png' },
+            { type: 'image', src: 'imagenes/rombosbnb3.png' },
+          ]},
+          { name: 'Beige', code: '#EBDECF', media: [
+            { type: 'image', src: 'imagenes/rombobnbe1.png' },
+            { type: 'image', src: 'imagenes/rombobnbe2.png' },
+            { type: 'image', src: 'imagenes/rombobnbe3.png' },
+            { type: 'image', src: 'imagenes/rombobnbe4.png' },
+            ]},
+          { name: 'Negro', code: '#000000', media: [
+            { type: 'image', src: 'imagenes/rombobnn1.png' },
+            { type: 'image', src: 'imagenes/rombobnn2.png' },
+            { type: 'image', src: 'imagenes/rombobnn3.png' },
+          ]},
+          { name: 'Negro Veteado', code: '#3c3b37', media: [
+            { type: 'image', src: 'imagenes/rombobnnv1.png' },
+            { type: 'image', src: 'imagenes/rombobnnv2.png' },
+            { type: 'image', src: 'imagenes/rombobnnv3.png' },
+            { type: 'image', src: 'imagenes/rombobnnv4.png' },
+
+          ]},
+          { name: 'Gris', code: '#756f69', media: [
+            { type: 'image', src: 'imagenes/rombobng1.png' },
+            { type: 'image', src: 'imagenes/rombobng2.png' },
+            { type: 'image', src: 'imagenes/rombobng3.png' },
+            
+          ]},
+          { name: 'Turquesa suave', code: '#a4ede8', media: [
+            { type: 'image', src: 'imagenes/rombobnt1.png' },
+            { type: 'image', src: 'imagenes/rombobnt2.png' },
+            { type: 'image', src: 'imagenes/rombobnt3.png' },
+            { type: 'image', src: 'imagenes/rombobnt4.png' },
+            ]},
+
+          { name: 'Marron Oscuro', code: '#5e3522', media: [
+            { type: 'image', src: 'imagenes/rombobnmo1.png' },
+            { type: 'image', src: 'imagenes/rombobnmo2.png' },
+           ]},
+
+          { name: 'Suela', code: '#7e3c0c', media: [
+            { type: 'image', src: 'imagenes/rombobns1.png' },
+            { type: 'image', src: 'imagenes/rombobns2.png' },
+           ]},
+
+          { name: 'Ocre', code: '#9f603a', media: [
+            { type: 'image', src: 'imagenes/rombobno1.png' },
+            { type: 'image', src: 'imagenes/rombobno2.png' },
+           ]},
+
+          { name: 'Bordo', code: '#471e1d', media: [
+            { type: 'image', src: 'imagenes/rombobnbo1.png' },
+            { type: 'image', src: 'imagenes/rombobnbo2.png' },
+            { type: 'image', src: 'imagenes/rombobnbo3.png' },
+           ]},
+          { name: 'Azul Marino', code: '#1b2431', media: [
+            { type: 'image', src: 'imagenes/rombobnam1.png' },
+            { type: 'image', src: 'imagenes/rombobnam2.png' },
+            { type: 'image', src: 'imagenes/rombobnam3.png' },
+            { type: 'image', src: 'imagenes/rombobnam4.png' },
+           ]},
+        ]
+      },
+      {
+        id: 'pulse',
+        name: 'Banqueta Ruedas',
+        price: 120000,
+        description: 'Altura máxima: 58 cm\nAltura mínima: 37 cm\nAncho del asiento: 43 cm\nProfundidad del asiento: 38 cm\nEspesor del asiento: 6,5 cm\nRespaldo del asiento: 30 cm',
+        colors: [
+          { name: 'Blanco', code: '#FFFFFF', media: [ 
+            { type: 'image', src: 'banquetaruedas/br1.png' },
+            { type: 'image', src: 'banquetaruedas/bruedasb1.png' },
+            { type: 'image', src: 'banquetaruedas/bruedasb2.png' },
+            { type: 'image', src: 'banquetaruedas/bruedasb3.png' },
+            ]},
+          { name: 'Negro', code: '#000000', media: [
+            { type: 'image', src: 'banquetaruedas/br2.png' },
+            { type: 'image', src: 'banquetaruedas/bruedasn1.png' },
+            { type: 'image', src: 'banquetaruedas/bruedasn2.png' },
+            { type: 'image', src: 'banquetaruedas/bruedasn3.png' },
+            ]}
+        ]
+      },
+      {
+        id: 'drift',
+        name: 'Banco Redondo',
+        price: 95000,
+        description: 'Alto total: 81 cm\nAltura mínima: 63 cm\nBase: 39 cm\nDiámetro de alto: 34 cm\nEspesor: 7 cm',
+        colors: [
+          { name: 'Blanco', code: '#FFFFFF', media: [
+            { type: 'image', src: 'bredondo/bar1.png' },
+            { type: 'image', src: 'bredondo/bredondob1.png' },
+            { type: 'image', src: 'bredondo/bredondob2.png' },
+            
+          ]},
+          { name: 'Negro', code: '#000000', media: [
+            { type: 'image', src: 'bredondo/bar2.png' },
+            { type: 'image', src: 'bredondo/bredondon1.png' },
+            { type: 'image', src: 'bredondo/bredondon2.png' },
+            { type: 'image', src: 'bredondo/bredondon3.png' }
+           ]}
+        ]
+      },
+      {
+        id: 'p5',
+        name: 'Banqueta Lisa',
+        price: 120000,
+        description: 'Altura máxima: 81 cm\nAltura mínima: 63 cm\nAsiento: 48 cm\nProfundidad: 36 cm\nEspesor: 3 cm\nRespaldo alto: 32 cm\n',
+        colors: [
+          { name: 'Negro', code: '#000000', media: [
+            { type: 'image', src: 'blisacrom/lb2.png' },
+            { type: 'image', src: 'blisacrom/lisa1.png' },
+            { type: 'image', src: 'blisacrom/lisa2.png' },
+            { type: 'image', src: 'blisacrom/lisa3.png' }
+           
+           ]}
+        ]
+      },
+      {
+        id: 'p6',
+        name: 'Banqueta Lisa Base Negra',
+        price: 130000,
+        description: 'Altura máxima: 81 cm\nAltura mínima: 63 cm\nAsiento: 48 cm\nProfundidad: 36 cm\nEspesor: 3 cm\nRespaldo alto: 32 cm\n',
+        colors: [
+          { name: 'Negro', code: '#000000', media: [
+            { type: 'image', src: 'blisabn/lb1.png' },
+            { type: 'image', src: 'blisabn/blisabn3.png' },
+            { type: 'image', src: 'blisabn/blisabn1.png' },
+            { type: 'image', src: 'blisabn/blisabn2.png' }
+           
+           ]}
+        ]
+      },
+      {
+        id: 'p7',
+        name: 'Banqueta Rayas',
+        price: 120000,
+        description: 'Altura máxima: 81 cm\nAltura mínima: 63 cm\n\nAsiento: 41 cm\nProfundidad: 40 cm\nEspesor: 6,5 cm\nRespaldo alto: 35 cm\n\n',
+        colors: [
+          { name: 'Negro', code: '#000000', media: [
+            { type: 'image', src: 'brayas/brayas1.png' },
+            { type: 'image', src: 'brayas/brayas2.png' },
+            { type: 'image', src: 'brayas/brayas3.png' },
+           
+           
+           ]}
+        ]
+      },
+      {
+        id: 'p8',
+        name: 'Banqueta Rayas Base Negra',
+        price: 130000,
+        description: 'Altura máxima: 81 cm\nAltura mínima: 63 cm\n\nAsiento: 41 cm\nProfundidad: 40 cm\nEspesor: 6,5 cm\nRespaldo alto: 35 cm\n\n',
+        colors: [
+          { name: 'Negro', code: '#000000', media: [
+            { type: 'image', src: 'brayas/brayasbn1.png' },
+            { type: 'image', src: 'brayas/brayasbn2.png' },
+            { type: 'image', src: 'brayas/brayasbn3.png' }
+           
+            ]}
+        ]
+      },
+      {
+        id: 'p9',
+        name: 'Banqueta Ruedas',
+        price: 95000,
+        description: 'Altura máxima al asiento: 55 cm\nAltura mínima al asiento: 40 cm\n\nAsiento: 39 cm\nProfundidad: 35 cm\nRespaldo: 12 cm alto\nEspesor: 6,5 cm',
+        colors: [
+          { name: 'Blanco', code: '#FFFFFF', media: [
+            { type: 'image', src: 'bruedas/br1.png' },
+            { type: 'image', src: 'bruedas/1.png' },
+            { type: 'image', src: 'bruedas/2.png' },
+            { type: 'image', src: 'bruedas/3.png' }
+           
+          ]},
+          { name: 'Negro', code: '#000000', media: [
+            { type: 'image', src: 'bruedas/bcr2.png' },
+            { type: 'image', src: 'bruedas/4.png' },
+            { type: 'image', src: 'bruedas/5.png' },
+            { type: 'image', src: 'bruedas/6.png' },
+           
+          ]}
+        ]
+      },
+      {
+        id: 'p10',
+        name: 'Banqueta Simil Rattan',
+        price: 155000,
+        description: 'Altura máxima: 83 cm\nAltura mínima: 64 cm\nAltura del respaldo: 20 cm\nAncho del asiento: 48 cm',
+        colors: [
+          { name: 'Negro', code: '#8c765f', media: [
+            { type: 'image', src: 'rattan/r1.png' },
+            { type: 'image', src: 'rattan/rattan1.png' },
+            { type: 'image', src: 'rattan/rattan2.png' },
+            { type: 'image', src: 'rattan/rattan3.png' },
+            { type: 'image', src: 'rattan/rattan4.png' },
+           
+            ]}
+        ]
+      },
+      {
+        id: 'p11',
+        name: 'Banqueta Simil Rattan Base Negra',
+        price: 165000,
+        description: 'Altura máxima: 83 cm\nAltura mínima: 64 cm\nAltura del respaldo: 20 cm\nAncho del asiento: 48 cm',
+        colors: [
+          { name: 'Negro', code: '#8c765f', media: [
+            { type: 'image', src: 'rattanbn/r2.png' },
+            { type: 'image', src: 'rattanbn/rattanbn1.png' },
+            { type: 'image', src: 'rattanbn/rattanbn2.png' },
+            { type: 'image', src: 'rattanbn/rattanbn3.png' },
+            { type: 'image', src: 'rattanbn/rattanbn4.png' },
+           
+           ]}
+        ]
+      },
+      {
+        id: 'p11a',
+        name: 'Silla Square',
+        price: 105000,
+        description: 'Altura máxima: 81 cm\nAltura mínima: 63 cm\nMedida de la base: 40 cm\nAncho: 42 cm\nProfundidad: 37 cm\nAlto: 27 cm\nEspesor: 4,5 cm',
+        colors: [
+          { name: 'Blanco', code: '#FFFFFF', media: [
+            { type: 'image', src: 'sillasquare/ss1.png' },
+            { type: 'image', src: 'sillasquare/ss2.png' },
+            { type: 'image', src: 'sillasquare/ss3.png' },
+            { type: 'image', src: 'sillasquare/ss4.png' },
+          ]},
+
+          { name: 'Negro', code: '#000000', media: [
+            { type: 'image', src: 'sillasquare/ss5.png' },
+            { type: 'image', src: 'sillasquare/ss6.png' },
+            { type: 'image', src: 'sillasquare/ss7.png' },
+          ]},
+
+          { name: 'Gris', code: '#7d7d7d', media: [
+            { type: 'image', src: 'sillasquare/ss8.png' },
+            { type: 'image', src: 'sillasquare/ss9.png' },
+            { type: 'image', src: 'sillasquare/ss10.png' },
+            { type: 'image', src: 'sillasquare/ss11.png' },
+          ]}
+        ]
+      },
+      {
+        id: 'p12',
+        name: 'Mesa Brillante',
+        price: 165000,
+        description: 'Altura máxima: 97 cm\nAltura mínima: 76 cm\nDiámetro: 60 cm\nDiámetro de la base: 45 cm',
+        colors: [
+          { name: 'Blanco', code: '#FFFFFF', media: [
+            { type: 'image', src: 'mesabrillante/m7.png' },
+            { type: 'image', src: 'mesabrillante/mbrillante1.png' },
+            { type: 'image', src: 'mesabrillante/mbrillante2.png' },
+           
+           ]},
+          { name: 'Negro', code: '#000000', media: [
+            { type: 'image', src: 'mesabrillante/m8.png' },
+            { type: 'image', src: 'mesabrillante/mbrillanten1.png' },
+            { type: 'image', src: 'mesabrillante/mbrillanten2.png' },
+          
+           ]}
+        ]
+      },
+      {
+        id: 'p13',
+        name: 'Mesa Brillante Base Negra',
+        price: 175000,
+        description: 'Altura máxima: 97 cm\nAltura mínima: 76 cm\nDiámetro: 60 cm\nDiámetro de la base: 45 cm',
+        colors: [
+          { name: 'Blanco', code: '#FFFFFF', media: [
+            { type: 'image', src: 'mesabrillante/m9.png' },
+            { type: 'image', src: 'mesabrillante/mbrillantebn1.png' },
+            { type: 'image', src: 'mesabrillante/mbrillantebn2.png' },
+            
+           ]},
+          { name: 'Negro', code: '#000000', media: [
+            { type: 'image', src: 'mesabrillante/mb.png' },
+            { type: 'image', src: 'mesabrillante/mbrillantebnn1.png' },
+            { type: 'image', src: 'mesabrillante/mbrillantebnn2.png' },
+            
+           
+           ]}
+        ]
+      },
+      {
+        id: 'p14',
+        name: 'Mesa MDF',
+        price: 160000,
+        description: 'Sonido inmersivo con cancelación activa y 40h de batería.',
+        colors: [
+          { name: 'Blanco', code: '#FFFFFF', media: [
+            
+            { type: 'image', src: 'mesamdf/m15.png' },
+            { type: 'image', src: 'mesamdf/me1.png' },
+            { type: 'image', src: 'mesamdf/me2.png' },
+            
+           ]},
+          { name: 'Negro', code: '#000000', media: [
+            { type: 'image', src: 'mesamdf/m16.png' },
+            { type: 'image', src: 'mesamdf/me3.png' },
+            { type: 'image', src: 'mesamdf/me4.png' },
+            
+           
+           ]}
+         
+        ]
+      },
+      {
+        id: 'p15',
+        name: 'Mesa MDF Base Negra',
+        price: 170000,
+        description: 'Sonido inmersivo con cancelación activa y 40h de batería.',
+       colors: [
+          { name: 'Blanco', code: '#FFFFFF', media: [
+            { type: 'image', src: 'mesamdf/m17.png' },
+            { type: 'image', src: 'mesamdf/mebn1.png' },
+            { type: 'image', src: 'mesamdf/mebn2.png' },
+            
+           ]},
+          { name: 'Negro', code: '#000000', media: [
+            { type: 'image', src: 'mesamdf/m18.png' },
+            { type: 'image', src: 'mesamdf/mebn3.png' },
+            { type: 'image', src: 'mesamdf/mebn4.png' },
+            
+           
+           ]}
+        ]
+      },
+
+      {
+        id: 'p16',
+        name: 'Mesa Light Brown',
+        price: 165000,
+        description: 'Sonido inmersivo con cancelación activa y 40h de batería.',
+        colors: [
+          { name: 'Marron Claro', code: '#b28d70', media: [
+            { type: 'image', src: 'mesalightbrown/m3.png' },
+            { type: 'image', src: 'mesalightbrown/mlb1.png' },
+            { type: 'image', src: 'mesalightbrown/mlb2.png' },
+            { type: 'image', src: 'mesalightbrown/mlb3.png' },
+           
+            ]}
+        ]
+      },
+      {
+        id: 'p17',
+        name: 'Mesa Light Brown base negra',
+        price: 175000,
+        description: 'Sonido inmersivo con cancelación activa y 40h de batería.',
+        colors: [
+          { name: 'Marron Claro', code: '#b28d70', media: [
+            { type: 'image', src: 'mesalightbrown/m4.png' },
+            { type: 'image', src: 'mesalightbrown/mlbbn1.png' },
+            { type: 'image', src: 'mesalightbrown/mlbbn2.png' },
+           
+            ]}
+        ]
+      },
+      {
+        id: 'p18',
+        name: 'Mesa Dark Brown',
+        price: 165000,
+        description: 'Sonido inmersivo con cancelación activa y 40h de batería.',
+        colors: [
+          { name: 'Marron Oscuro', code: '#5d4638', media: [
+            { type: 'image', src: 'mesadarkbrown/m2.png' },
+            { type: 'image', src: 'mesadarkbrown/mdb1.png' },
+            { type: 'image', src: 'mesadarkbrown/mdb2.png' },
+           
+            ]}
+        ]
+      },
+      {
+        id: 'p19',
+        name: 'Mesa Dark Brown Base Negra',
+        price: 175000,
+        description: 'Sonido inmersivo con cancelación activa y 40h de batería.',
+        colors: [
+          { name: 'Marron Oscuro', code: '#5d4638', media: [
+            { type: 'image', src: 'mesadarkbrown/m1.png' },
+            { type: 'image', src: 'mesadarkbrown/mdbbn1.png' },
+            { type: 'image', src: 'mesadarkbrown/mdbbn2.png' },
+            { type: 'image', src: 'mesadarkbrown/mdbbn3.png' },
+            
+            ]}
+        ]
+      },
+      {
+        id: 'p20',
+        name: 'Mesa Ecocuero',
+        price: 165000,
+        description: 'Sonido inmersivo con cancelación activa y 40h de batería.',
+        colors: [
+          { name: 'Blanco', code: '#FFFFFF', media: [
+            { type: 'image', src: 'mesaecocuero/m12.png' },
+            { type: 'image', src: 'mesaecocuero/me1.png' },
+            { type: 'image', src: 'mesaecocuero/me2.png' },
+            
+           ]},
+          { name: 'Negro', code: '#000000', media: [
+            { type: 'image', src: 'mesaecocuero/m11.png' },
+            { type: 'image', src: 'mesaecocuero/me3.png' },
+           
+           
+           ]}
+        ]
+      },
+
+      {
+        id: 'p21',
+        name: 'Mesa Ecocuero Base Negra',
+        price: 175000,
+        description: 'Sonido inmersivo con cancelación activa y 40h de batería.',
+        colors: [
+          { name: 'Blanco', code: '#FFFFFF', media: [
+            { type: 'image', src: 'mesaecocuero/m13.png' },
+            { type: 'image', src: 'mesaecocuero/mebn1.png' },
+            { type: 'image', src: 'mesaecocuero/mebn2.png' },
+            
+           ]},
+          { name: 'Negro', code: '#000000', media: [
+            { type: 'image', src: 'mesaecocuero/m14.png' },
+            { type: 'image', src: 'mesaecocuero/mebn3.png' },
+          
+           
+           ]}
+        ]
+      },
+
+      {
+        id: 'p22',
+        name: 'Mesa Simil Cemento',
+        price: 165000,
+        description: 'Sonido inmersivo con cancelación activa y 40h de batería.',
+        colors: [
+          { name: 'Gris', code: '#7d7d7d', media: [
+            { type: 'image', src: 'mesasimilcemento/m5.png' },
+            { type: 'image', src: 'mesasimilcemento/msc1.png' },
+            { type: 'image', src: 'mesasimilcemento/msc2.png' },
+            { type: 'image', src: 'mesasimilcemento/msc3.png' },
+            
+            ]}
+        ]
+      },
+      {
+        id: 'p23',
+        name: 'Mesa Simil Cemento Base Negra',
+        price: 175000,
+        description: 'Mesa auxiliar redonda con base cromada.',
+       colors: [
+          { name: 'Gris', code: '#7d7d7d', media: [
+            { type: 'image', src: 'mesasimilcemento/m6.png' },
+            { type: 'image', src: 'mesasimilcemento/mscbn1.png' },
+            { type: 'image', src: 'mesasimilcemento/mscbn2.png' },
+          
+            ]}
+        ]
+      },
+    ];
+
+    const FILTERS = {
+      inicio: null,
+      banquetas: ['aurora','lumen','pulse','p5','p6','p7','p8','p10','p11','p11a'],
+      bancos: ['drift','p9'],
+      mesas: ['p12','p13','p14','p15','p16','p17','p18','p19','p20','p21','p22','p23'],
+    };
+
+    const grid = document.getElementById('product-grid');
+    const filterNav = document.getElementById('filter-nav');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuToggle = document.getElementById('menu-toggle');
+    const drawer = document.getElementById('drawer');
+    const overlay = document.getElementById('overlay');
+    const modalTitle = document.getElementById('modal-title');
+    const modalDesc = document.getElementById('modal-description');
+    const modalPrice = document.getElementById('modal-price');
+    const modalSwatches = document.getElementById('modal-swatches');
+    const modalAdd = document.getElementById('modal-add');
+    const cartList = document.getElementById('cart-list');
+    const cartTotal = document.getElementById('cart-total');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxClose = document.getElementById('lightbox-close');
+    const WA_NUMBER = "5491167813147";
+    const cardState = new Map(); // productId -> { color, index }
+    let currentFilter = 'inicio';
+
+    let activeProduct = null;
+    let activeColor = null;
+    const cart = JSON.parse(localStorage.getItem('soltar-cart') || '[]');
+
+    function saveCart() {
+      localStorage.setItem('soltar-cart', JSON.stringify(cart));
+      updateCartUI();
+    }
+
+    function formatCurrency(value) {
+      const num = Number(value || 0);
+      return `${num.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ARS`;
+    }
+
+    function getVideoType(src) {
+      const lower = (src || '').toLowerCase();
+      if (lower.endsWith('.mov') || lower.endsWith('.qt')) return 'video/quicktime';
+      if (lower.endsWith('.webm')) return 'video/webm';
+      return 'video/mp4';
+    }
+
+    const primaryMedia = (color) => color.media?.find(m => m.type === 'image') || color.media?.[0];
+    const buildWA = (product, color) =>
+      `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent('Hola! Quiero consultar sobre ' + (product?.name || '') + ' color ' + (color || '') + '.')}`;
+
+    const getImageMedia = (color) => (color?.media || []).filter(m => m.type === 'image' || !m.type);
+
+    const getFilteredProducts = (filter) => {
+      if (!FILTERS[filter]) return products;
+      const allowed = FILTERS[filter];
+      return products.filter(p => allowed.includes(p.id));
+    };
+
+    // Mantiene sincronizados los data-attributes de acciones (foto, descripción, WhatsApp)
+    // con el último color elegido para que al abrir la modal se muestre el tono correcto.
+    function syncCardActions(card, product, colorName) {
+      if (!card || !product) return;
+      card.querySelectorAll('[data-action="open"]').forEach(btn => { btn.dataset.color = colorName; });
+      card.querySelectorAll('[data-action="wa"]').forEach(btn => {
+        btn.dataset.color = colorName;
+        btn.href = buildWA(product, colorName);
+      });
+      const visual = card.querySelector('.card-visual');
+      if (visual) visual.dataset.color = colorName;
+    }
+
+    function updateCardImage(productId, colorName, index = 0) {
+      const card = grid.querySelector(`[data-card="${productId}"]`);
+      const product = products.find(p => p.id === productId);
+      if (!card || !product) return;
+      const color = product.colors.find(c => c.name === colorName) || product.colors[0];
+      const images = getImageMedia(color);
+      const media = images[index] || images[0] || primaryMedia(color);
+      const imgEl = card.querySelector('.card-visual img');
+      if (imgEl && media) imgEl.src = media.src;
+      syncCardActions(card, product, color.name);
+      cardState.set(productId, { color: color.name, index: images.indexOf(media) >= 0 ? images.indexOf(media) : 0 });
+    }
+
+    function cycleCardMedia(productId, delta) {
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+      const state = cardState.get(productId) || { color: product.colors[0].name, index: 0 };
+      const color = product.colors.find(c => c.name === state.color) || product.colors[0];
+      const images = getImageMedia(color);
+      if (!images.length) return;
+      const nextIndex = (state.index + delta + images.length) % images.length;
+      updateCardImage(productId, color.name, nextIndex);
+    }
+
+    function renderGrid() {
+      grid.classList.toggle('grid-banquetas', currentFilter === 'banquetas');
+      grid.classList.toggle('grid-bancos', currentFilter === 'bancos');
+      grid.classList.toggle('grid-mesas', currentFilter === 'mesas');
+      grid.innerHTML = '';
+      let items = getFilteredProducts(currentFilter);
+      if (currentFilter === 'banquetas') {
+        const priority = ['aurora', 'lumen'];
+        const prioritized = priority
+          .map(id => items.find(p => p.id === id))
+          .filter(Boolean);
+        const others = items.filter(p => !priority.includes(p.id));
+        const firstChunk = others.slice(0, 4);
+        const rest = others.slice(4);
+        items = [...firstChunk, ...prioritized, ...rest];
+      }
+      items.forEach(product => {
+        const defaultColor = product.colors[0];
+        const thumb = primaryMedia(defaultColor);
+        const cardBg = '#fff';
+        cardState.set(product.id, { color: defaultColor.name, index: 0 });
+
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.dataset.card = product.id;
+        card.innerHTML = `
+          <div class="card-visual" data-action="open" data-id="${product.id}" data-color="${defaultColor.name}" style="background: ${cardBg}; cursor:pointer;">
+            <button class="nav-btn prev" data-card-nav="-1" data-id="${product.id}" aria-label="Anterior">‹</button>
+            <img src="${thumb?.src || ''}" alt="${product.name}" loading="lazy">
+            <button class="nav-btn next" data-card-nav="1" data-id="${product.id}" aria-label="Siguiente">›</button>
+          </div>
+          <div class="card-body">
+            <div class="card-title">
+              <span>${product.name}</span>
+            </div>
+            <div class="muted card-price-line">${formatCurrency(product.price)}</div>
+            <div class="swatches">
+              ${product.colors.map((c, i) =>
+                `<button class="swatch ${i === 0 ? 'active' : ''}" style="background:${c.code}" data-id="${product.id}" data-color="${c.name}" aria-label="${c.name}"></button>`
+              ).join('')}
+            </div>
+            <div class="card-actions">
+              <button class="btn desc-btn" data-action="open" data-id="${product.id}" data-color="${defaultColor.name}">Descripción</button>
+              <a class="btn wa-btn" data-action="wa" data-id="${product.id}" data-color="${defaultColor.name}" href="${buildWA(product, defaultColor.name)}" target="_blank" rel="noopener">WhatsApp</a>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function updateFilterUI() {
+      if (filterNav) {
+        filterNav.querySelectorAll('.filter-btn')
+          .forEach(btn => btn.classList.toggle('active', btn.dataset.filter === currentFilter));
+      }
+      if (mobileMenu) {
+        mobileMenu.querySelectorAll('.filter-btn')
+          .forEach(btn => btn.classList.toggle('active', btn.dataset.filter === currentFilter));
+      }
+    }
+
+    function setFilter(filter) {
+      currentFilter = filter in FILTERS ? filter : 'inicio';
+      updateFilterUI();
+      renderGrid();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderModalMedia(media) {
+      const container = document.getElementById('modal-media');
+      if (!media) return;
+      if (media.type === 'video') {
+        container.innerHTML = `
+          <button class="nav-btn prev" data-nav="-1">‹</button>
+          <video controls playsinline style="width:100%; height:100%; object-fit:contain; border-radius:12px; background:#000;">
+            <source src="${media.src}" type="${getVideoType(media.src)}">
+            Tu navegador no soporta video.
+          </video>
+          <button class="nav-btn next" data-nav="1">›</button>
+        `;
+      } else {
+        container.innerHTML = `
+          <button class="nav-btn prev" data-nav="-1">‹</button>
+          <img src="${media.src}" alt="${activeProduct?.name || ''}" loading="lazy" style="width:100%;height:100%;object-fit:contain;">
+          <button class="nav-btn next" data-nav="1">›</button>
+        `;
+      }
+    }
+
+    function changeMedia(delta) {
+      if (!activeColor) return;
+      const total = activeColor.media.length;
+      activeColor.activeIndex = (activeColor.activeIndex + delta + total) % total;
+      const mainMedia = activeColor.media[activeColor.activeIndex];
+      renderModalMedia(mainMedia);
+      renderModalGallery(activeProduct, activeColor);
+    }
+
+    function openLightbox(src) { /* deshabilitado */ }
+
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      lightbox.setAttribute('aria-hidden', 'true');
+      lightboxImg.src = '';
+    }
+
+    function renderModalGallery(product, activeColor) {
+      const gallery = document.getElementById('modal-gallery');
+      gallery.innerHTML = activeColor.media.map((m, idx) => `
+        <button class="swatch" style="width:54px;height:54px;border-radius:12px;border:2px solid ${idx === activeColor.activeIndex ? 'var(--accent)' : 'rgba(31,46,45,0.12)'};padding:4px;overflow:hidden;display:grid;place-items:center;background:#fff;" data-gallery-index="${idx}">
+          ${m.type === 'video'
+            ? '<span style="font-size:12px;color:var(--accent);">Video</span>'
+            : `<img src="${m.src}" alt="${product.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;">`}
+        </button>
+      `).join('');
+    }
+
+    function renderDescription(desc) {
+      const container = document.getElementById('modal-description');
+      const normalized = (desc || '').replace(/<br\s*\/?>/gi, '\n');
+      const paragraphs = normalized.split(/\n{2,}/).map(p => p.trim()).filter(Boolean);
+      container.innerHTML = (paragraphs.length ? paragraphs : [normalized.trim() || ''])
+        .map(p => `<p style="margin:0; line-height:1.55; white-space:pre-line;">${p}</p>`)
+        .join('');
+    }
+
+    function openModal(product, colorName) {
+      activeProduct = product;
+      activeColor = { ...product.colors.find(c => c.name === colorName) || product.colors[0] };
+      activeColor.activeIndex = 0;
+      const mainMedia = activeColor.media[activeColor.activeIndex];
+      modalTitle.textContent = product.name;
+      renderDescription(product.description);
+      modalPrice.textContent = formatCurrency(product.price);
+      renderModalMedia(mainMedia);
+      modalSwatches.innerHTML = product.colors.map(c => `
+        <button class="swatch ${c.name === activeColor.name ? 'active' : ''}" style="background:${c.code}" data-modal-color="${c.name}" aria-label="${c.name}"></button>
+      `).join('');
+      renderModalGallery(product, activeColor);
+      overlay.classList.add('open');
+      document.body.classList.add('modal-open');
+    }
+
+    function closeModal() {
+      overlay.classList.remove('open');
+      activeProduct = null;
+      activeColor = null;
+      document.body.classList.remove('modal-open');
+    }
+
+    function toggleDrawer(open) {
+      drawer.classList.toggle('open', open);
+    }
+
+    function addToCart(productId, colorName) {
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+      const color = product.colors.find(c => c.name === colorName) || product.colors[0];
+      const key = product.id + '|' + color.name;
+      const existing = cart.find(item => item.key === key);
+      const img = primaryMedia(color)?.src || '';
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ key, productId: product.id, name: product.name, color: color.name, price: product.price, img, qty: 1 });
+      }
+      saveCart();
+    }
+
+    function updateCartUI() {
+      cartList.innerHTML = '';
+      let total = 0;
+      cart.forEach(item => {
+        total += item.price * item.qty;
+        const el = document.createElement('div');
+        el.className = 'cart-item';
+        el.innerHTML = `
+          <div class="cart-thumb"><img src="${item.img}" alt="${item.name}"></div>
+          <div>
+            <h4>${item.name}</h4>
+            <div class="cart-meta">${item.color}</div>
+            <div class="cart-meta">${formatCurrency(item.price)}</div>
+          </div>
+          <div style="display:grid;gap:8px;justify-items:end;">
+            <div class="qty">
+              <button data-qty="-1" data-key="${item.key}">−</button>
+              <span>${item.qty}</span>
+              <button data-qty="1" data-key="${item.key}">+</button>
+            </div>
+            <button style="background:none;border:none;color:var(--muted);cursor:pointer;" data-remove="${item.key}">Eliminar</button>
+          </div>
+        `;
+        cartList.appendChild(el);
+      });
+      cartTotal.textContent = formatCurrency(total);
+    }
+
+    // Event delegation for grid
+    grid.addEventListener('click', (e) => {
+      const swatch = e.target.closest('.swatch');
+      if (swatch && swatch.dataset.id) {
+        e.stopPropagation();
+        const product = products.find(p => p.id === swatch.dataset.id);
+        if (!product) return;
+        const colorName = swatch.dataset.color;
+        const imgEl = swatch.closest('.card').querySelector('.card-visual img');
+        const color = product.colors.find(c => c.name === colorName) || product.colors[0];
+        const mediaList = getImageMedia(color);
+        const media = mediaList[0] || primaryMedia(color);
+        swatch.parentElement.querySelectorAll('.swatch')
+          .forEach(btn => btn.classList.toggle('active', btn === swatch));
+        if (media) imgEl.src = media.src;
+        cardState.set(product.id, { color: color.name, index: 0 });
+        syncCardActions(swatch.closest('.card'), product, color.name);
+      }
+      const navBtn = e.target.closest('[data-card-nav]');
+      if (navBtn) {
+        e.stopPropagation();
+        const delta = Number(navBtn.dataset.cardNav);
+        const productId = navBtn.dataset.id;
+        cycleCardMedia(productId, delta);
+        return;
+      }
+      const openBtn = e.target.closest('[data-action="open"]');
+      if (openBtn) {
+        const product = products.find(p => p.id === openBtn.dataset.id);
+        if (product) openModal(product, openBtn.dataset.color || product.colors[0].name);
+      }
+      const waBtn = e.target.closest('[data-action="wa"]');
+      if (waBtn) {
+        e.preventDefault();
+        const product = products.find(p => p.id === waBtn.dataset.id);
+        const colorName = waBtn.dataset.color || product?.colors?.[0]?.name || '';
+        window.open(buildWA(product, colorName), '_blank', 'noopener');
+      }
+    });
+
+    modalSwatches.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-modal-color]');
+      if (!btn || !activeProduct) return;
+      const colorName = btn.dataset.modalColor;
+      activeColor = { ...activeProduct.colors.find(c => c.name === colorName) || activeColor };
+      activeColor.activeIndex = 0;
+      renderModalMedia(activeColor.media[0]);
+      renderModalGallery(activeProduct, activeColor);
+      modalSwatches.querySelectorAll('.swatch').forEach(s => s.classList.toggle('active', s === btn));
+    });
+
+    // Modal add (WhatsApp button)
+    modalAdd.addEventListener('click', () => {
+      if (!activeProduct || !activeColor) return;
+      const link = buildWA(activeProduct, activeColor.name);
+      window.open(link, '_blank', 'noopener');
+    });
+
+    document.getElementById('modal-gallery').addEventListener('click', (e) => {
+      if (!activeColor) return;
+      const btn = e.target.closest('[data-gallery-index]');
+      if (!btn) return;
+      const idx = Number(btn.dataset.galleryIndex);
+      activeColor.activeIndex = idx;
+      renderModalMedia(activeColor.media[idx]);
+      renderModalGallery(activeProduct, activeColor);
+    });
+
+    document.getElementById('modal-media').addEventListener('click', (e) => {
+      const nav = e.target.closest('[data-nav]');
+      if (nav) {
+        changeMedia(Number(nav.dataset.nav));
+        return;
+      }
+    });
+
+    lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+    lightboxClose.addEventListener('click', closeLightbox);
+
+    document.getElementById('close-modal').addEventListener('click', closeModal);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+
+    const openCartBtn = document.getElementById('open-cart');
+    if (openCartBtn) openCartBtn.addEventListener('click', () => toggleDrawer(true));
+    document.getElementById('close-drawer').addEventListener('click', () => toggleDrawer(false));
+
+    cartList.addEventListener('click', (e) => {
+      const key = e.target.dataset.key;
+      if (e.target.dataset.qty && key) {
+        const delta = Number(e.target.dataset.qty);
+        const item = cart.find(i => i.key === key);
+        if (!item) return;
+        item.qty = Math.max(1, item.qty + delta);
+        saveCart();
+      }
+      if (e.target.dataset.remove) {
+        const idx = cart.findIndex(i => i.key === e.target.dataset.remove);
+        if (idx >= 0) { cart.splice(idx, 1); saveCart(); }
+      }
+    });
+
+    if (filterNav) {
+      filterNav.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-filter]');
+        if (!btn) return;
+        setFilter(btn.dataset.filter);
+      });
+    }
+    if (mobileMenu) {
+      mobileMenu.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-filter]');
+        if (!btn) return;
+        setFilter(btn.dataset.filter);
+        mobileMenu.classList.remove('open');
+        if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('menu-open');
+      });
+    }
+    if (menuToggle && mobileMenu) {
+      menuToggle.addEventListener('click', () => {
+        const isOpen = mobileMenu.classList.toggle('open');
+        menuToggle.setAttribute('aria-expanded', String(isOpen));
+        document.body.classList.toggle('menu-open', isOpen);
+      });
+    }
+
+    try {
+      updateFilterUI();
+      renderGrid();
+      updateCartUI();
+    } catch (e) {
+      console.error('Error inicializando la grilla:', e);
+      alert('Error en la página: ' + e.message);
+    }
+
+  </script>
+</body>
+</html>
